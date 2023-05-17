@@ -1,0 +1,15 @@
+<?php
+
+namespace App\Models;
+
+use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Model;
+
+class IngredientTranslation extends Model
+{
+    use HasFactory;
+
+    public $timestamps = false;
+
+    protected $fillable = ['name', 'ingredient_id', 'language_id'];
+}
