@@ -17,62 +17,70 @@ use App\Models\Restaurant;
 use App\Models\Side;
 use App\Models\Tag;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\App;
 
 class MealController extends Controller
 {
     public function index(Request $request)
     {
-        if (!$request->restaurant_id || !$request->sub_tag_id){
-            return response()->json([
-                'status' => 422,
-                'message' => null,
-                'errors' => ['default' => __('meals.no_data')],
-                'result' => 'failed',
-                'data' => null
-            ], 422);
+        if (!$request->restaurant_id || !$request->sub_tag_id) {
+            return Helper::responseJson(422, 'failed', null, ['default' => __('meals.no_data')], null, 422);
+            // return response()->json([
+            //     'status' => 422,
+            //     'message' => null,
+            //     'errors' => ['default' => __('meals.no_data')],
+            //     'result' => 'failed',
+            //     'data' => null
+            // ], 422);
         }
-        $meals = Meal::where(['restaurant_id' => $request->restaurant_id, 'tag_id' => $request->sub_tag_id])->cursor();
-//        if (!count($meals)){
-//            return response()->json([
-//                'status' => 422,
-//                'message' => null,
-//                'errors' => ['default' => __('meals.no_data')],
-//                'result' => 'failed',
-//                'data' => null
-//            ], 422);
-//        }
+        $meals = Meal::where(['restaurant_id' => $request->restaurant_id, 'tag_id' => $request->sub_tag_id])->join('meal_translations', 'meals.id', '=', 'meal_translations.meal_id')->where('language_id', Helper::currentLanguage(App::getLocale())->id)->get();
+        if (!count($meals)) {
+            return Helper::responseJson(422, 'failed', null, ['default' => __('meals.no_data')], null, 422);
+            // return response()->json([
+            //     'status' => 422,
+            //     'message' => null,
+            //     'errors' => ['default' => __('meals.no_data')],
+            //     'result' => 'failed',
+            //     'data' => null
+            // ], 422);
+        }
+        return Helper::responseJson(200, 'success', __('meals.data_retrieved_success'), null, ['meal' => !$meals ? [] : MealResource::collection($meals)], 200);
 
-        return response()->json([
-            'status' => 200,
-            'message' => __('meals.data_retrieved_success'),
-            'errors' => null,
-            'result' => 'success',
-            'data' => ['meal' => MealResource::collection($meals)]
-        ], 200);
+        // return response()->json([
+        //     'status' => 200,
+        //     'message' => __('meals.data_retrieved_success'),
+        //     'errors' => null,
+        //     'result' => 'success',
+        //     'data' => ['meal' => !$meals ? []: MealResource::collection($meals)]
+        // ], 200);
     }
 
     public function show(Request $request)
     {
-        $meal = Meal::with(['features','ingredients','sizes', 'addons'])->find($request->meal_id);
-        if (!$meal){
-            return response()->json([
-                'status' => 422,
-                'message' => null,
-                'errors' => ['default' => __('meals.no_data')],
-                'result' => 'failed',
-                'data' => null
-            ], 422);
+        $meal = Meal::join('meal_translations', 'meals.id', '=', 'meal_translations.meal_id')->with(['features', 'ingredients', 'sizes', 'addons'])->find($request->meal_id);
+        if (!$meal) {
+            return Helper::responseJson(422, 'failed', null, ['default' => __('meals.no_data')], null, 422);
+            // return response()->json([
+            //     'status' => 422,
+            //     'message' => null,
+            //     'errors' => ['default' => __('meals.no_data')],
+            //     'result' => 'failed',
+            //     'data' => null
+            // ], 422);
         }
 
         $sides = Side::cursor();
         $sides = SideResource::collection($sides);
-        return response()->json([
-            'status' => 200,
-            'message' => __('meals.data_retrieved_success'),
-            'errors' => null,
-            'result' => 'success',
-            'data' => ['meal' => MealResource::make($meal), 'sides' => $sides]
-        ], 200);
+
+        return Helper::responseJson(200, 'success', __('meals.data_retrieved_success'), null, ['meal' => MealResource::make($meal), 'sides' => $sides], 200);
+
+        // return response()->json([
+        //     'status' => 200,
+        //     'message' => __('meals.data_retrieved_success'),
+        //     'errors' => null,
+        //     'result' => 'success',
+        //     'data' => ['meal' => MealResource::make($meal), 'sides' => $sides]
+        // ], 200);
     }
 
     public function authIndex(Request $request)
@@ -87,14 +95,18 @@ class MealController extends Controller
 
     public function popularMeals()
     {
-        $meals=Meal::withAvg('reviews', 'rating')->orderByDesc('reviews_avg_rating')->latest()->paginate(15);
-        return response()->json([
-            'status' => 200,
-            'message' => __('meals.data_retrieved_success'),
-            'errors' => null,
-            'result' => 'success',
-            'data' => ['meal' => MealResource::collection($meals)->response()->getData(true)]
-        ], 200);
+        $meals = Meal::join('meal_translations', 'meals.id', '=', 'meal_translations.meal_id')->where('language_id', Helper::currentLanguage(App::getLocale())->id)->paginate(15);
+        // dd($meals);
+
+        // withAvg('reviews', 'rating')->orderByDesc('reviews_avg_rating')->latest()->
+        return Helper::responseJson(200, 'success', __('meals.data_retrieved_success'), null, ['meal' => MealResource::collection($meals)->response()->getData(true)], 200);
+        // return response()->json([
+        //     'status' => 200,
+        //     'message' => __('meals.data_retrieved_success'),
+        //     'errors' => null,
+        //     'result' => 'success',
+        //     'data' => ['meal' => MealResource::collection($meals)->response()->getData(true)]
+        // ], 200);
     }
 
     public function authPopularMeals()
@@ -109,15 +121,17 @@ class MealController extends Controller
         foreach ($restaurants as $restaurant) {
             $recommendedMealsByRestaurant = Meal::whereRestaurantId($restaurant->id)->withAvg('reviews', 'rating')->orderByDesc('reviews_avg_rating')->get();
         }
+        return Helper::responseJson(200, 'success', 'Meals Retrieved Successfully', null, MealResource::collection($recommendedMealsByRestaurant), 200);
 
-        return response()->json(['message' => 'Meals Retrieved Successfully', 'status' => 200, 'data' => MealResource::collection($recommendedMealsByRestaurant)], 200);
+        // return response()->json(['message' => 'Meals Retrieved Successfully', 'status' => 200, 'data' => MealResource::collection($recommendedMealsByRestaurant)], 200);
     }
 
     public function mealOffers(Category $category)
     {
-        return response()->json(['message' => 'Offers Retrieved Successfully', 'status' => 200, 'data' =>
-            OfferResource::collection(Offer::whereCategoryId($category->id)->get())
-        ], 200);
+        return Helper::responseJson(200, 'success', 'Offers Retrieved Successfully', null, OfferResource::collection(Offer::whereCategoryId($category->id)->get()), 200);
+        // return response()->json(['message' => 'Offers Retrieved Successfully', 'status' => 200, 'data' =>
+        // OfferResource::collection(Offer::whereCategoryId($category->id)->get())
+        // ], 200);
     }
 
     public function addToFavorite(Meal $meal)
@@ -132,7 +146,7 @@ class MealController extends Controller
         }
 
         $langId = Helper::currentLanguage()->id;
-        $favorites = Favorite::where(['user_id' => auth()->id(),'favoriteable_type' => 'App\Models\Meal'])
+        $favorites = Favorite::where(['user_id' => auth()->id(), 'favoriteable_type' => 'App\Models\Meal'])
             ->join('meals', 'meals.id', 'favorites.favoriteable_id')
             ->join('meal_media', 'meals.id', 'meal_media.meal_id')
             ->where('meal_media.default', 1)
@@ -147,13 +161,14 @@ class MealController extends Controller
                 'meals.price',
             ])->cursor();
 
-        return response()->json([
-            'status' => 200,
-            'message' => $message,
-            'errors' => null,
-            'result' => 'success',
-            'data' => ['meals' => MealFavoriteResource::collection($favorites)]
-        ], 200);
+        return Helper::responseJson(200, 'success', $message, null, ['meals' => MealFavoriteResource::collection($favorites)], 200);
+        // return response()->json([
+        //     'status' => 200,
+        //     'message' => $message,
+        //     'errors' => null,
+        //     'result' => 'success',
+        //     'data' => ['meals' => MealFavoriteResource::collection($favorites)]
+        // ], 200);
 
     }
 }

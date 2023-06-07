@@ -13,18 +13,20 @@ use App\Models\Category;
 use App\Models\Meal;
 use App\Models\Restaurant;
 use Illuminate\Http\Request;
+use App\Helper\Helper;
 
 class CategoryController extends Controller
 {
     public function index()
     {
-        return response()->json([
-            'status' => 200,
-            'message' => null,
-            'errors' => null,
-            'result' => 'success',
-            'data' => ["category" => CategoryResource::collection(Category::all())]
-        ], 200);
+        return Helper::responseJson(200 , 'success' , null ,null ,["category" => CategoryResource::collection(Category::all())] , 200);
+        // return response()->json([
+        //     'status' => 200,
+        //     'message' => null,
+        //     'errors' => null,
+        //     'result' => 'success',
+        //     'data' => ["category" => CategoryResource::collection(Category::all())]
+        // ], 200);
     }
 
     public function minions(Request $request)
@@ -33,25 +35,29 @@ class CategoryController extends Controller
         $filters = ['restaurants', 'meals', 'offers'];
 
         if (!in_array($request->filter, $filters)){
-            return response()->json([
-                'status' => 422,
-                'message' => null,
-                'errors' => ['default' => __('categories.no_data')],
-                'result' => 'failed',
-                'data' => null
-            ], 422);
+        return Helper::responseJson(422 , 'failed' , null ,['default' => __('categories.no_data')] ,null, 422);
+
+            // return response()->json([
+            //     'status' => 422,
+            //     'message' => null,
+            //     'errors' => ['default' => __('categories.no_data')],
+            //     'result' => 'failed',
+            //     'data' => null
+            // ], 422);
         }
 
         if ($request->filter == 'restaurants'){
             $restaurants = Restaurant::whereCategoryId($request->category_id)->cursor();
             $data = RestaurantForCatResource::collection($restaurants);
-            return response()->json([
-                'status' => 200,
-                'message' => null,
-                'errors' => null,
-                'result' => 'success',
-                'data' => ["$request->filter" => $data]
-            ], 200);
+            return Helper::responseJson(200 , 'success' , null ,['default' => __('categories.no_data')] ,["$request->filter" => $data], 200);
+
+            // return response()->json([
+            //     'status' => 200,
+            //     'message' => null,
+            //     'errors' => null,
+            //     'result' => 'success',
+            //     'data' => ["$request->filter" => $data]
+            // ], 200);
         }
 
         if ($request->filter == 'meals' || $request->filter == 'offers'){
@@ -68,14 +74,16 @@ class CategoryController extends Controller
                 $meals = $meals->cursor();
                 $data = MealOfferForCatResource::collection($meals);
             }
+            return Helper::responseJson(200 , 'success' , null ,null ,["$request->filter" => $data], 200);
 
-            return response()->json([
-                'status' => 200,
-                'message' => null,
-                'errors' => null,
-                'result' => 'success',
-                'data' => ["$request->filter" => $data]
-            ], 200);
+
+            // return response()->json([
+            //     'status' => 200,
+            //     'message' => null,
+            //     'errors' => null,
+            //     'result' => 'success',
+            //     'data' => ["$request->filter" => $data]
+            // ], 200);
         }
 
     }

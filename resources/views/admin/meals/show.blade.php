@@ -11,7 +11,7 @@
                 <div class="card-body">
                     <div class="row">
                         <div class="col-lg-12 col-xl-5  mb-4 mt-xl-0">
-                            <img src="{{ $meal->img_path }}" class="img-fluid rounded" alt="image" style="height: 100%;">
+                            <img src="{{ $meal->media }}" class="img-fluid rounded" alt="image" style="height: 100%;">
                         </div>
                         <div class="col-lg-12 col-xl-7">
                             <h4 class="mb-2">{{ $meal->name }}</h4>

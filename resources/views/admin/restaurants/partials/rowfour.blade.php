@@ -39,6 +39,7 @@
                         </div>
                     </div>
                     <div class="py-4">
+                        <!--@dd($restaurant)-->
                         <h6 class="heading-title fw-bolder">{{ $restaurant->tags->pluck('name')->join(', ') }}</h6>
                         <div class="d-flex align-items-center">
                             <p class="mb-0">{{ $restaurant->today_working_hours }} (Today)</p>

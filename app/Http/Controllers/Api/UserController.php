@@ -19,7 +19,7 @@ use Laravel\Passport\RefreshToken;
 use Laravel\Passport\Token;
 use App\Models\User;
 use App\Mail\sendOtp;
-use App\Helper\helper;
+use App\Helper\Helper;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\DB;
 use App\Http\Controllers\Controller;
@@ -56,13 +56,15 @@ class UserController extends Controller
 
         $user = User::where(['phone' => $request->phone, 'country_code' => $request->country_code])->first();
         if (!$user){
-            return response()->json([
-                'status' => 422,
-                'message' => null,
-                'errors' => ['default' => [__('users.country_code_phone_error')]],
-                'result' => 'failed',
-                'data' => null
-            ], 422);
+            
+            return Helper::responseJson(422, 'failed' , null , ['default' => [__('users.country_code_phone_error')]] , null ,422);
+            // return response()->json([
+            //     'status' => 422,
+            //     'message' => null,
+            //     'errors' => ['default' => [__('users.country_code_phone_error')]],
+            //     'result' => 'failed',
+            //     'data' => null
+            // ], 422);
         }
 
         /**
@@ -72,22 +74,32 @@ class UserController extends Controller
         $otpValid = $user->otp_valid ? Carbon::make($user->otp_valid ?? null)->addMinutes(30)->format('Y-m-d H:i') : null;
         $now = Carbon::now()->format('Y-m-d H:i');
         if ($user->otp && $otpValid && $otpValid < $now){
-            return response()->json([
-                'status' => 200,
-                'message' => null,
-                'last_step' => 'verify',
-                'otp' => (int) $user->otp,
-                'errors' => null,
-                'result' => 'success',
-                'data' => [
-                    'user' =>
-                        [
-                            'otp' => (int) $user->otp,
-                            'phone' => $user->phone,
-                            'country_code' => $user->country_code,
-                        ]
-                ]
-            ], 200);
+            $data =[ 
+                        'user' =>
+                            [
+                                'otp' => (int) $user->otp,
+                                'phone' => $user->phone,
+                                'country_code' => $user->country_code,
+                                'last_step' => 'verify',
+                            ]
+                    ];
+            return Helper::responseJson(200 , 'success' , null , null , $data , 200 );
+            // return response()->json([
+            //     'status' => 200,
+            //     'message' => null,
+            //     'last_step' => 'verify',
+            //     'otp' => (int) $user->otp,
+            //     'errors' => null,
+            //     'result' => 'success',
+            //     'data' => [
+            //         'user' =>
+            //             [
+            //                 'otp' => (int) $user->otp,
+            //                 'phone' => $user->phone,
+            //                 'country_code' => $user->country_code,
+            //             ]
+            //     ]
+            // ], 200);
         }
 
         $auth = Auth::attempt(['phone' => $request->phone, 'password' => $request->password], true);
@@ -99,10 +111,13 @@ class UserController extends Controller
                 'result' => 'failed',
                 'data' => null
             ], 422);
+                        // return Helper::responseJson(422, 'failed' , 'test' , null ,null ,422);
+
+            
         }
 
         $user = Auth::user();
-
+        
         /**
          * If user not active or not complete register then prevent login
          */
@@ -125,9 +140,9 @@ class UserController extends Controller
         }
 
         $token =  $user->createToken('MyLaravelApp')->accessToken;
-
         $data = UserSimpleResource::make($user);
         $data = data_set($data, 'token', $token);
+                    // return Helper::responseJson(200, 'success' , 'test' , null , $data ,200);
         return response()->json([
             'status' => 200,
             'message' => __('users.login_success'),
@@ -313,7 +328,6 @@ class UserController extends Controller
         }
 
         $user = $user->first();
-
         if (!($user->id ?? null)) {
             return response()->json([
                 'status' => 422,
@@ -353,7 +367,7 @@ class UserController extends Controller
          * In case user not logged in
          */
         if ($request->operation_type == 'reset_password'){
-            $data['otp'] = $request->otp;
+            $data['otp'] = intval( $request->otp);
             $data['phone'] = $request->phone;
             $data['country_code'] = $request->country_code;
 
@@ -415,11 +429,11 @@ class UserController extends Controller
 
         $otp = 1234 ?? rand(0000,9999);
 
-        EmailOtpJob::dispatch([
-            'email' => $request->email,
-            'otp' => $otp,
-            'user' => $user->name,
-        ], 'emails.email_otp');
+        // EmailOtpJob::dispatch([
+        //     'email' => $request->email,
+        //     'otp' => $otp,
+        //     'user' => $user->name,
+        // ], 'emails.email_otp');
 
         $user->update(['otp' => $otp, 'otp_valid' => now()]);
 
@@ -570,13 +584,14 @@ class UserController extends Controller
     {
         $user = Auth::user();
 
-        $otp = 1234 ?? rand(0000,9999);
+        $otp = 1111;
+        // $otp = 1234 ?? rand(0000,9999);
 
-        EmailOtpJob::dispatch([
-            'email' => $request->email,
-            'otp' => $otp,
-            'user' => $user->name,
-        ], 'emails.email_otp');
+        // EmailOtpJob::dispatch([
+        //     'email' => $request->email,
+        //     'otp' => $otp,
+        //     'user' => $user->name,
+        // ], 'emails.email_otp');
 
         $user->update(['otp' => $otp, 'otp_valid' => now()]);
 

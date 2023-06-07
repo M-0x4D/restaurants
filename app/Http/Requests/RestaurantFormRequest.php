@@ -53,4 +53,6 @@ class RestaurantFormRequest extends FormRequest
 
         return $rules;
     }
+
+
 }

@@ -35,19 +35,38 @@ class Helper
    return $credentials;
 }
 
-    static function responseJson($status,$result, $massage, $data, $status_code): JsonResponse
+    static function responseJson($status,$result, $massage, $errors, $data, $status_code): JsonResponse
     {
-            $response =
+        
+        
+        
+        
+        if($errors !== null ){
+             $response =
                 [
                     'status' => $status,
+                    'message' => $massage,
+                    'errors' => $errors,
                     'result' =>$result,
-                    'massage' => $massage,
                     'data' => $data
 
                 ];
+        }
+        else
+        {
+            $response =
+                [
+                    'status' => $status,
+                    'message' => $massage,
+                    'result' =>$result,
+                    'data' => $data
+
+                ];
+        }
+            
 
 
-        return response()->json([$response],(int)$status_code);
+        return response()->json($response,(int)$status_code);
     }
 
     function calculateTotal(): array
@@ -294,7 +313,7 @@ class Helper
 
     public static function getFullPath($file): string
     {
-        return request()->root().'/'.trim($file, '/');
+        return $file ? request()->root().'/'.trim($file, '/') : '';
     }
 
 

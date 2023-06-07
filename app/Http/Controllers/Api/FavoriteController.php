@@ -33,13 +33,15 @@ class FavoriteController extends Controller
                     'meals.avg_rate',
                     'meals.price',
                 ])->cursor();
-            return response()->json([
-                'status' => 200,
-                'message' => __('meals.data_retrieved_success'),
-                'errors' => null,
-                'result' => 'success',
-                'data' => ['meals' => MealFavoriteResource::collection($mealFavorites)]
-            ], 200);
+
+                return Helper::responseJson(200 , 'success' , __('meals.data_retrieved_success') , null , ['meals' => MealFavoriteResource::collection($mealFavorites)] , 200);
+            // return response()->json([
+            //     'status' => 200,
+            //     'message' => __('meals.data_retrieved_success'),
+            //     'errors' => null,
+            //     'result' => 'success',
+            //     'data' => ['meals' => MealFavoriteResource::collection($mealFavorites)]
+            // ], 200);
         }
         if($sort == 'restaurant') {
 //            $restaurantFavorites = auth()->user()->restaurantFavorites()->cursor();
@@ -58,13 +60,14 @@ class FavoriteController extends Controller
                     'restaurants.delivery_fees',
                 ])->cursor();
 
-            return response()->json([
-                'status' => 200,
-                'message' => __('restaurants.data_retrieved_success'),
-                'errors' => null,
-                'result' => 'success',
-                'data' => ['restaurants' => RestaurantFavoriteResource::collection($restaurantFavorites)]
-            ], 200);
+                return Helper::responseJson(200 , 'success' ,__('restaurants.data_retrieved_success') , null ,  ['restaurants' => RestaurantFavoriteResource::collection($restaurantFavorites)] , 200 );
+            // return response()->json([
+            //     'status' => 200,
+            //     'message' => __('restaurants.data_retrieved_success'),
+            //     'errors' => null,
+            //     'result' => 'success',
+            //     'data' => ['restaurants' => RestaurantFavoriteResource::collection($restaurantFavorites)]
+            // ], 200);
         }
 
     }

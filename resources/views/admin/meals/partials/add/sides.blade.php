@@ -47,7 +47,7 @@
     <div class="form-group">
         <label class="form-label">image: *</label>
         <input type="file" class="form-control @error('main_image') is-invalid @enderror" name="sides[{$counter}][main_image]" />
-        @error('main_image')
+        @error('sides.*.main_image')
             <span class="invalid-feedback" role="alert">
                 <strong>{{ $message }}</strong>
             </span>

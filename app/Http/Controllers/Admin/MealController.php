@@ -10,11 +10,13 @@ use App\Models\Meal;
 use App\Models\Restaurant;
 use App\Models\Side;
 use App\Models\Tag;
+use App\Models\Addon;
 use App\Upload\Upload;
 use Illuminate\Http\Request;
 use File;
-use Barryvdh\Debugbar\Facades\Debugbar;;
+use Barryvdh\Debugbar\Facades\Debugbar;
 use Illuminate\Support\Facades\App;
+use App\Http\Requests\Admin\CreateMealRequest;
 
 class MealController extends Controller
 {
@@ -30,13 +32,20 @@ class MealController extends Controller
 
     public function indexTwo(Restaurant $restaurant)
     {
-        return view('admin.meals.indextwo', [
-            'restaurant' => $restaurant, 
-            'meals' => Meal::join('meal_translations' , 'meals.id' , '=' , 'meal_translations.meal_id')
+        $protocol = (!empty($_SERVER['HTTPS']) && (strtolower($_SERVER['HTTPS']) == 'on' || $_SERVER['HTTPS'] == '1')) ? 'https://' : 'http://';
+        $host = $_SERVER['HTTP_HOST'];
+        $meals = Meal::join('meal_translations' , 'meals.id' , '=' , 'meal_translations.meal_id')
             ->join('meal_media' , 'meals.id' , '=' , 'meal_media.meal_id')
             // ->join('meal_drinks' , 'meals.id' , '=' , 'meal_drinks.meal_id')
         ->where('language_id' , Helper::currentLanguage(App::getLocale())->id)
-        ->whereRestaurantId($restaurant->id)->get()]);
+        ->whereRestaurantId($restaurant->id)->get();
+        foreach ($meals as $meal)
+        {
+            $meal['media'] = $protocol .$host . '/' .$meal['media'];
+        }
+        return view('admin.meals.indextwo', [
+            'restaurant' => $restaurant, 
+            'meals' => $meals]);
     }
 
     /**
@@ -70,13 +79,12 @@ class MealController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Restaurant $restaurant, Request $request)
+    public function store(Restaurant $restaurant, CreateMealRequest $request)
     {
-        // dd($request->all());
         $langs = Helper::languages();
-        $request->merge(['image' =>  Upload::uploadImage($request->main_image, 'meals' , $request->name)]);
-        
-        $meal = $restaurant->meals()->create($request->only('tag_id','price'));
+        $request->merge(['category_id' => $restaurant->category_id]);
+        $meal = $restaurant->meals()->create($request->only('tag_id','price' , 'category_id'));
+
         foreach ($langs as $key => $lang) {
             
             $meal->translations()->create([
@@ -88,17 +96,19 @@ class MealController extends Controller
             ]);
         }
         
-        $meal->media()->create(['default' => 1, 'media' => $request->image, 'type' => 'image']);
+        $meal->media()->create(['default' => 1, 'media' => 'storage/meals/'.$request->image, 'type' => 'image']);
+
 
         // features
         for ($i=0; $i < count($request->features['name']); $i++) {
             $meal->features()->create(['name' => $request->features['name'][$i], 'value' => $request->features['value'][$i]]);
         }
 
+
         // ingredients
         for ($i=0; $i < count($request->ingredients); $i++) {
             $ingredient = $meal->ingredients()->create([
-                'image' => $request->ingredients[$i]["main_image"] , 
+                'image' => 'storage/ingredients/'. Upload::uploadImage( $request->ingredients[$i]["main_image"] , 'ingredients' , $request->ingredients[$i]['en']['name']),
                 'meal_id' => $meal->id
             ]);
             foreach ($langs as $key => $lang) {
@@ -108,6 +118,7 @@ class MealController extends Controller
                     'language_id' => $lang->id
                 ]);
             }
+            
         }
 
         // sizes 
@@ -126,17 +137,17 @@ class MealController extends Controller
             }
         }
 
-
         //options
-        // for ($i=0; $i < count($request->options['name']); $i++) {
-        //     $meal->options()->create(['name' => $request->options['name'][$i], 'image' => Upload::uploadImage($request->options['main_image'][$i], 'options' , $request->options['name'][$i]), 'price' => $request->options['price'][$i]]);
-        // }
-
+        for ($i=0; $i < count($request->options['name']); $i++) {
+            $addon = Addon::create(['name' => $request->options['name'][$i], 'image' => 'storage/addons/'. Upload::uploadImage($request->options['main_image'][$i], 'options' , $request->options['name'][$i]), 'price' => $request->options['price'][$i]]);
+                $meal->addons()->attach($addon->id);
+        }
         
+
         // drinks
         for ($i=0; $i < count($request->drinks); $i++) {
             $drink = $meal->drinks()->create([
-                'image' => $request->drinks[$i]["main_image"] , 
+                'image' => 'storage/drinks/'. Upload::uploadImage( $request->drinks[$i]["main_image"] , 'drinks' , $request->drinks[$i]['en']['name']), 
                 'price' => $request->drinks[$i]["price"]
             ]);
             foreach ($langs as $key => $lang) {
@@ -146,14 +157,15 @@ class MealController extends Controller
                     'language_id' => $lang->id
                 ]);
             }
-            $meal->drinks()->attach($drink->id);
+            // $meal->drinks()->attach($drink->id);
         }
+
 
 
         //sides
         for ($i=0; $i < count($request->sides); $i++) {
             $side = Side::create([
-                'image' => $request->sides[$i]["main_image"] , 
+                'image' => 'storage/sides/' . Upload::uploadImage( $request->sides[$i]["main_image"] , 'sides' , $request->sides[$i]['en']['name']), 
                 'price' => $request->sides[$i]["price"]
             ]);
             foreach ($langs as $key => $lang) {
@@ -178,7 +190,8 @@ class MealController extends Controller
      */
     public function show(Restaurant $restaurant, Meal $meal)
     {
-        //! work here 888888888888888888888888888888888888888888888888888888888
+        $protocol = (!empty($_SERVER['HTTPS']) && (strtolower($_SERVER['HTTPS']) == 'on' || $_SERVER['HTTPS'] == '1')) ? 'https://' : 'http://';
+        $host = $_SERVER['HTTP_HOST'];
         $restaurant = $restaurant->where('restaurant_id' , $restaurant->id)
         ->join('restaurant_translations' , 'restaurants.id' , '=' , 'restaurant_translations.restaurant_id')
         ->where('language_id', Helper::currentLanguage(App::getLocale())->id)->first();
@@ -189,6 +202,7 @@ class MealController extends Controller
         ->join('meal_media' , 'meals.id' , '=' , 'meal_media.meal_id')
         ->where('language_id' , Helper::currentLanguage(App::getLocale())->id)->first();
 
+$meal['media'] = $protocol . $host . '/' . $meal['media'];
 
         return view('admin.meals.show', ['restaurant' => $restaurant, 'meal' => $meal]);
     }

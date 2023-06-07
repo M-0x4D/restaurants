@@ -45,5 +45,5 @@
 <div class="options-area"></div>
 
 
-<button class="btn btn-primary rounded" onclick="addOption();return false;">Add New Option</button>
+<button class="btn btn-primary rounded" onclick="addOption();return false;">Add New Addon</button>
 

@@ -163,7 +163,7 @@
                             </div>
                             <div class="col-md-6">
                                 <div class="form-group">
-                                    <label class="form-label">Delivery Time: *</label>
+                                    <label class="form-label">Delivery Time: in minutes </label>
                                     <input type="text" class="form-control @error('delivery_time') is-invalid @enderror" name="delivery_time" placeholder="Delivery Time" />
                                     <div class="invalid-feedback">
                                         Please provide a valid name.

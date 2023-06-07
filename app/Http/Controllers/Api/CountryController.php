@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Resources\CountryResource;
 use App\Models\Country;
 use Illuminate\Http\Request;
+use App\Helper\Helper;
 
 class CountryController extends Controller
 {
@@ -13,13 +14,14 @@ class CountryController extends Controller
     {
         $countries = Country::select(['id', 'name', 'code', 'flag']);
         if (!count($countries->cursor())){
-            return response()->json([
-                'status' => 422,
-                'message' => null,
-                'errors' => ['default' => __('countries.no_data')],
-                'result' => 'failed',
-                'data' => null
-            ], 422);
+            return Helper::responseJson(422 , 'failed' , null , ['default' => __('countries.no_data')] , null , 422 );
+            // return response()->json([
+            //     'status' => 422,
+            //     'message' => null,
+            //     'errors' => ['default' => __('countries.no_data')],
+            //     'result' => 'failed',
+            //     'data' => null
+            // ], 422);
         }
 
         $data = [];
@@ -31,13 +33,14 @@ class CountryController extends Controller
             $data = CountryResource::collection($countries);
         }
 
-        return response()->json([
-            'status' => 200,
-            'message' => __('countries.data_retrieved_success'),
-            'errors' => null,
-            'result' => 'success',
-            'data' => ['country' => $data]
-        ], 200);
+        return Helper::responseJson(200 , 'success' , __('countries.data_retrieved_success') ,null,['country' => $data] ,  200);
+        // return response()->json([
+        //     'status' => 200,
+        //     'message' => __('countries.data_retrieved_success'),
+        //     'errors' => null,
+        //     'result' => 'success',
+        //     'data' => ['country' => $data]
+        // ], 200);
 
     }
 }

@@ -4,6 +4,7 @@ namespace App\Http\Resources;
 
 use App\Helper\Helper;
 use App\Models\Review;
+use App\Models\Meal;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\Resources\Json\JsonResource;
 
@@ -22,6 +23,10 @@ class MealForCatResource extends JsonResource
     {
         $allMedia = [];
         $image = null;
+        
+        // dd($this);
+
+        // $meal = Meal::where('id' , $this->meal_id)->first();
 
         if (count($this->media()->get())){
             $medias = $this->media()->get()->toArray();
@@ -31,11 +36,11 @@ class MealForCatResource extends JsonResource
             }
         }
 
-        $mealImage = $image ??  array_rand($allMedia);
+        $mealImage = $image ?? $allMedia? array_rand($allMedia) : '';
 
         return [
             'id' => $this->id,
-            'name' => $this->translation->name,
+            'name' => $this->translation->name ?? null,
             'description' => Helper::stripText($this->description),
             'price' => (double) $this->price,
             'currency' => 'EGP',

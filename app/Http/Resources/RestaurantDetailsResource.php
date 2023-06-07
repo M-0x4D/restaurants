@@ -26,7 +26,7 @@ class RestaurantDetailsResource extends JsonResource
             'distance' => Restaurant::distance($this->lat,$this->lng,request()->header('lat'),request()->header('lng'),"K")." Km",
             'delivery_time' => $this->delivery_time_value,
             'delivery_fees_trans' => $this->delivery_fees == 0 ? 'free delivery' : $this->delivery_fees_value,
-            'delivery_fees' =>  (double) $this->delivery_fees,
+            'delivery_fees' => number_format( (float) $this->delivery_fees, 2, '.', ''),// (float) $this->delivery_fees,
             'description' => Helper::stripText($this->translation->description),
             'reviews_count' => $reviews_count,
             'reviews' => $this->whenLoaded('reviews'),

@@ -15,4 +15,16 @@ class Country extends Model
     use HasFactory;
     use SoftDeletes;
     protected $fillable = ['name', 'code', 'flag'];
+    
+    public function getImgPathAttribute()
+    {
+        if ($this->flage) {
+        return asset($this->flag);
+    } else {
+        return asset('');
+    }
+        // dd($defaultMealMedia);
+
+    }
+
 }

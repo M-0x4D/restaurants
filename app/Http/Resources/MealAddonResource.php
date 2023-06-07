@@ -16,12 +16,12 @@ class MealAddonResource extends JsonResource
     public function toArray($request)
     {
         return [
-            'id' => $this->addon->id,
-            'image' => Helper::getFullPath($this->addon->image),
-            'name' => $this->addon->name,
-            'price' => (double) $this->addon->price,
+            'id' => $this->id,
+            'image' => Helper::getFullPath($this->image),
+            'name' => $this->name,
+            'price' => (double) $this->price,
             'currency' => 'EGP',
-            'qty' =>$this->addon->qty
+            'qty' =>$this->qty
           ];
     }
 }

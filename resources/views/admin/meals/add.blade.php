@@ -67,7 +67,7 @@
                                                     d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
                                             </svg>
                                         </div>
-                                        <span>Options</span>
+                                        <span>Addons</span>
                                     </a>
                                 </li>
                                 <li id="Ingredients" class="col-lg-3 col-md-3 mb-2 text-start">
@@ -197,7 +197,7 @@
                                 <div class="form-card text-start">
                                     <div class="row">
                                         <div class="col-7">
-                                            <h3 class="mb-4">options :</h3>
+                                            <h3 class="mb-4">Addon :</h3>
                                         </div>
                                         <div class="col-5">
                                             <h2 class="steps">Step 5 - 7</h2>
@@ -288,7 +288,10 @@
          {{-- <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/1.4.0/axios.min.js" integrity="sha512-uMtXmF28A2Ab/JJO2t/vYhlaa/3ahUOgj1Zf27M5rOo8/+fcTUVH0/E0ll68njmjrLqOBjXM3V9NiPFL5ywWPQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script> --}}
 
          <script src="{{asset('admin_panel/assets/js/axios.min.js')}}"></script>
+         
+
     <script>
+
         var counter1 = 0;
         var formHTML1 = $('.ingredient-form').html()
         $('.ingredient-form').html(

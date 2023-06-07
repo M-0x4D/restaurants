@@ -32,20 +32,18 @@ class RecommendedMealForHomeResource extends JsonResource
             }
         }
 
-        $mealImage = $image ??  array_rand($allMedia);
-
-
+    if(!empty($allMedia)) $mealImage = $image ??  array_rand($allMedia);
 
         return [
             'id' => $this->id,
-            'restaurant_id' => $this->restaurant->id,
-            'delivery_fees' => $this->restaurant->delivery_fees,
-            'name' => $this->translation->name,
-            'description' => Helper::stripText($this->description),
-            'price' => (double) $this->price,
+            'restaurant_id' => $this->restaurant->id ?? 0,
+            'delivery_fees' => $this->restaurant->delivery_fees ?? 0,
+            'name' => $this->translation->name ?? '',
+            'description' => Helper::stripText($this->description) ?? '',
+            'price' => (double) $this->price ?? 0,
             'currency' => 'EGP',
-            'media' => $allMedia,
-            'image' => $mealImage,
+            'media' => $allMedia ?? [],
+            'image' => $mealImage ?? '',
             'rating' => empty($this->reviews) || $this->reviews->pluck('rating')->count() == 0 ?  0 : round($this->reviews->pluck('rating')->sum() / $this->reviews->pluck('rating')->count(), 1),
             'favorite' => $this->favorites()->whereUserId((auth()->user()->id ?? null))->exists() ? 1 : 0,
         ];

@@ -1,6 +1,9 @@
 @extends('admin.layouts.main')
 
 @section('header')
+
+<!--<link rel="stylesheet" media="screen" type="text/css" href="css/colorpicker.css" />-->
+
     <style>
         .form-card{
             width: 90%;
@@ -76,7 +79,15 @@
          </div>
          <div class="col-md-12">
             <label for="validationCustom03" class="form-label">color</label>
-            <input type="text" class="form-control @error('color') is-invalid @enderror" name="color" value="#ff6161">
+            
+            
+             <div class="d-flex align-items-center">
+                
+              <input id="colorx" style="width: 2rem; height:2rem " type="color" id="favcolor" name="favcolor" value=""><br><br>
+            <input type="text" class="form-control @error('color') is-invalid @enderror" name="color" value="">
+                
+            </div>
+
             <div class="invalid-feedback">
                Please provide a valid color.
             </div>
@@ -88,7 +99,15 @@
          </div>
          <div class="col-md-12">
             <label for="validationCustom03" class="form-label">Border color</label>
-            <input type="text" class="form-control @error('border_color') is-invalid @enderror" name="border_color" value="#ff6161">
+            
+            <div class="d-flex align-items-center">
+                
+              <input id="bordercolorx" style="width: 2rem; height:2rem " type="color" id="favcolor" name="favcolor" value="#ff0000"><br><br>
+            <input type="text" class="form-control @error('border_color') is-invalid @enderror" name="border_color" value="">
+                
+            </div>
+            
+            
             <div class="invalid-feedback">
                Please provide a valid Border Color.
             </div>
@@ -131,5 +150,17 @@
                     </div>')});
             }
         });
+        
+        
+const colorElement = document.getElementById('colorx');
+const  colorVal = document.getElementsByName('color')
+
+// console.log(colorElement.value)
+
+colorElement.addEventListener('click' , (val) => {
+    // colorVal.value = val
+// console.log(val.target.value)
+})
+
     </script>
 @endsection

@@ -24,6 +24,6 @@ class Addon extends Model
 
     public function getImgPathAttribute()
     {
-        return asset('storage/addons/' . $this->image);
+        return asset($this->image);
     }
 }

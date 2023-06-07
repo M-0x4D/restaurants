@@ -35,7 +35,7 @@ class Drink extends Model
 
     public function getImgPathAttribute()
     {
-        return asset('storage/drinks/'.$this->image);
+        return asset($this->image);
     }
 
     public function getPriceValueAttribute()

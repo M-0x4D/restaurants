@@ -77,12 +77,12 @@ class Restaurant extends Model
 
     public function getImgPathAttribute()
     {
-        return asset('storage/restaurants/'.$this->image);
+        return asset($this->image);
     }
 
     public function getCoverPathAttribute()
     {
-        return asset('storage/restaurants/'.$this->cover);
+        return asset($this->cover);
     }
 
     public function getDeliveryTimeValueAttribute()
@@ -126,6 +126,8 @@ class Restaurant extends Model
     // Get Distance Between Restaurant And User
     // https://www.folkstalk.com/2022/09/find-distance-between-two-coordinate-in-php-with-code-examples.html
     public static function distance($lat1, $lon1, $lat2, $lon2, $unit) {
+
+// dd(gettype($lon2));
 
         $theta = $lon1 - $lon2;
         $dist = sin(deg2rad($lat1)) * sin(deg2rad($lat2)) +  cos(deg2rad($lat1)) * cos(deg2rad($lat2)) * cos(deg2rad($theta));

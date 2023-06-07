@@ -21273,3 +21273,7 @@ img.img-user {
 .user-img1 {
   position: fixed;
   top: 280px; }
+  
+  .btn-outline-primary::after{
+      background: #EA6A1257 !important;
+  }

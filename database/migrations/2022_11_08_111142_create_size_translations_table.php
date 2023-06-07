@@ -15,7 +15,7 @@ class CreateSizeTranslationsTable extends Migration
     {
         Schema::create('size_translations', function (Blueprint $table) {
             $table->id();
-            $table->string('name', 10);
+            $table->string('name', 50);
             $table->unsignedBigInteger('size_id')->index();
             $table->unsignedBigInteger('language_id')->index();
 

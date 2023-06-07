@@ -35,7 +35,7 @@
                     fdprocessedid="d740od">
                     <option selected="" disabled="">Select Restaurant</option>
                     @foreach ($restaurants as $restaurant)
-                                <option value="{{ $restaurant->id }}">{{ $restaurant->name }}</option>
+                                <option value="{{ $restaurant->restaurant_id }}">{{ $restaurant->name }}</option>
                             @endforeach
                     
                 </select>

@@ -24,6 +24,7 @@ use App\Http\Controllers\Admin\SearchController;
 use App\Http\Controllers\Admin\SideController;
 use App\Http\Controllers\Admin\SizeController;
 use App\Http\Controllers\Admin\SubTagController;
+use App\Http\Controllers\Admin\CountryController;
 use App\Http\Controllers\Admin\TagController;
 use App\Http\Controllers\Admin\UserController as AdminUserController;
 use App\Http\Controllers\Admin\WeekHourController;
@@ -54,6 +55,8 @@ Route::get('testt', function(){
     $contents = Storage::disk('public')->get('fakepath/Afaker.txt');
     echo $contents;
 });
+
+    // route::get('/', [DashboardController::class, 'index'])->name('dashboard');
 
 
 Route::group([
@@ -151,6 +154,12 @@ Route::group(['middleware' => ['assign.guard:admin,admin/login'] , 'prefix' => '
     Route::get('sides_index', [SideController::class, 'index'])->name('sides.indextwo');
     Route::get('sides/{side}/delete', [SideController::class, 'destroy'])->name('sides.delete');
 
+
+
+    // countries
+    Route::resource('countries' , CountryController::class);
+    Route::get('countries', [CountryController::class, 'index'])->name('countries.index');
+    Route::get('countries/{country}/delete', [CountryController::class, 'destroy'])->name('countries.delete');
 
 
     // week_hours

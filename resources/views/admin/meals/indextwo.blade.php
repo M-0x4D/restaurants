@@ -55,7 +55,7 @@
                                 <p>
                                 </p>
                             </div>
-                            <img src="http://127.0.0.1:8000/storage/meals/{{ $meal->media }}" class="img-fluid rounded avatar-160" alt="profile-image">
+                            <img src="{{ $meal->media }}" class="img-fluid rounded avatar-160" alt="profile-image">
                         </div>
 
                         <div class="iq-share-btn">

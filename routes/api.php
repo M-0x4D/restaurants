@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Admin\DriverController;
 use App\Http\Controllers\Api\AboutUsController;
 use App\Http\Controllers\Api\AddressController;
 use App\Http\Controllers\Api\CountryController;
@@ -21,6 +22,8 @@ use App\Http\Controllers\Api\RestaurantController;
 use App\Http\Controllers\Api\StatusController;
 use App\Http\Controllers\Api\TagController;
 use App\Http\Controllers\Api\SearchHistoryController;
+use App\Http\Controllers\DriverController as ControllersDriverController;
+use App\Http\Controllers\RoomController;
 use App\Http\Middleware\CheckUserLangMiddleware;
 
 /*
@@ -83,12 +86,21 @@ Route::group(['middleware' => 'check_user_lang'], function (){
 
 //    Route::post('check-otp-for-phone', [UserController::class , 'checkOtpForPhone']);
 
+        Route::get('nearest_restaurants', [RestaurantController::class, 'nearestRestaurants']);
 
 
     Route::group(['middleware' => 'auth:api'], function(){
 
         // Must be cleared after finish test
         Route::post('test', [HomeController::class, 'test']);
+
+
+        Route::post('create-room' , [RoomController::class , 'create_room']);
+Route::post('create-message' , [MessageController::class , 'create_message']);
+Route::post('get-rooms' , [RoomController::class , 'return_rooms']);
+Route::post('logout' , [UserController::class , 'logout']);
+Route::post('get-users' , [UserController::class , 'get_users']);
+Route::post('get-drivers' , [ControllersDriverController ::class , 'get_drivers']);
 
         // This for authentication
         Route::get('auth-home', [HomeController::class, 'indexAuth']);
@@ -191,7 +203,6 @@ Route::group(['middleware' => 'check_user_lang'], function (){
 
 
 
-        Route::get('nearest_restaurants', [RestaurantController::class, 'nearestRestaurants']);
 
 
         //search
@@ -215,3 +226,19 @@ Route::group(['middleware' => 'check_user_lang'], function (){
     });
 
 });
+
+
+
+
+
+
+
+//////////////////////////////////
+
+
+Route::post('create-user' , [UserController::class , 'register']);
+Route::post('sign-user' , [UserController::class , 'sign_in']);
+Route::post('create-driver' , [DriverController::class , 'register']);
+Route::post('sign-driver' , [DriverController::class , 'sign_in']);
+
+

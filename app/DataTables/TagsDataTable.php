@@ -41,7 +41,6 @@ class TagsDataTable extends DataTable
         return $model->where('parent_id' , null)->join('tag_translations' , 'tags.id' , '=' , 'tag_translations.tag_id')
         ->where('tag_translations.language_id' , Helper::currentLanguage(App::getLocale())->id)
         ->join('restaurant_translations' , 'tags.restaurant_id' , '=' , 'restaurant_translations.restaurant_id')->newQuery();
-        // ->where('restaurant_translations.language_id' , Helper::currentLanguage(App::getLocale())->id)
         // ->where('restaurant_translations.restaurant_id' , $model->restaurant_id)->newQuery();
     }
 

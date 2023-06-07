@@ -61,6 +61,7 @@ class CategoryController extends Controller
         //     return redirect()->back()->withErrors($validator);
         // }
         $data = $request->except(['main_image' , 'name_ar' , 'name_en' , 'name_fr']);
+        $data['image'] = "storage/categories/".$data['image'];
         $category = Category::create($data);
         $languages = Helper::languages();
         

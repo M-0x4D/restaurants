@@ -30,9 +30,16 @@ class RestaurantController extends Controller
 
     public function indexTwo()
     {
+        // $protocol = (!empty($_SERVER['HTTPS']) && (strtolower($_SERVER['HTTPS']) == 'on' || $_SERVER['HTTPS'] == '1')) ? 'https://' : 'http://';
+        // $host = $_SERVER['HTTP_HOST'];
+        $restaurants = Restaurant::join('restaurant_translations' , 'restaurants.id' , '=' , 'restaurant_translations.restaurant_id')
+        ->where('language_id' , Helper::currentLanguage(App::getLocale())->id )->get();
+        // foreach ($restaurants as $restaurant)
+        // {
+        //     $restaurant['image'] = $protocol . $host . '/' . $restaurant['image'];
+        // }
         // dd(Restaurant::join('restaurant_translations' , 'restaurants.id' , '=' , 'restaurant_translations.restaurant_id')->where('language_id' , Helper::currentLanguage(App::getLocale())->id )->get());
-        return view('admin.restaurants.indextwo', ['restaurants' => Restaurant::join('restaurant_translations' , 'restaurants.id' , '=' , 'restaurant_translations.restaurant_id')
-        ->where('language_id' , Helper::currentLanguage(App::getLocale())->id )->get()]);
+        return view('admin.restaurants.indextwo', ['restaurants' => $restaurants]);
     }
 
 /**
@@ -88,6 +95,8 @@ class RestaurantController extends Controller
 
         $request->merge(['lat' => $latlngArray[0], 'lng' => $latlngArray[1], 'image' => Upload::uploadImage($request->main_image, 'restaurants' , $request->name), 'cover' => Upload::uploadImage($request->main_cover, 'restaurants' , $request->name.'-cover')]);
         $data = $request->except('latlng','weekhours','main_image','main_cover' , 'name_ar' , 'name_en' , 'name_fr' , 'description_ar' , 'description_en' , 'description_fr');
+        $data['image'] = "storage/restaurants/" . $data['image'];
+        $data['cover'] = "storage/restaurants/" . $data['cover'];
         $restaurant = Restaurant::create($data);
         $langs = Helper::languages();
         foreach ($langs as $key => $lang) {

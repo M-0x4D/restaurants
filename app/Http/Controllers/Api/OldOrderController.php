@@ -16,7 +16,6 @@ use App\Http\Resources\OrderResource;
 use PHPUnit\Framework\Constraint\Count;
 use App\Http\Resources\OrderItemResource;
 use App\Http\Resources\SimpleOrderResource;
-
 use App\Http\Resources\SimpleOrderStatusResource;
 use App\Http\Resources\Api\Address\AddressResource;
 use App\Http\Requests\Api\Coupon\StoreCouponRequest;

@@ -15,11 +15,13 @@ class MealDrinkResource extends JsonResource
      */
     public function toArray($request)
     {
+        
+        // dd($this);
         return [
-            'id' => $this->drink->id,
-            'image' => Helper::getFullPath($this->drink->image),
-            'name' => $this->drink->translation->name,
-            'price' => (double) $this->drink->price_value,
+            'id' => $this->drink->id ?? 0,
+            'image' => Helper::getFullPath($this->drink->image) ?? '',
+            'name' => $this->drink->translation->name ?? '',
+            'price' => (double) $this->drink->price_value ?? 0,
             'currency' => 'EGP',
           ];
     }

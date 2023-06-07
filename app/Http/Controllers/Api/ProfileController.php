@@ -9,6 +9,7 @@ use App\Models\User;
 use App\Upload\Upload;
 use Illuminate\Http\Request;
 use Validator;
+use App\Helper\Helper;
 
 class ProfileController extends Controller
 {
@@ -34,7 +35,9 @@ class ProfileController extends Controller
 
 
         if ($validator->fails()) {
-            return response()->json(['message' => 'something wrong please try again', 'status' => 400 ,'errors' => $validator->errors()], 400);
+        return Helper::responseJson(422, 'failed', 'something wrong please try again', $validator->errors(), null, 422);
+            
+            // return response()->json(['message' => 'something wrong please try again', 'status' => 400 ,'errors' => $validator->errors()], 400);
         }
 
         if ($request->email !== $user->email) {
@@ -61,7 +64,8 @@ class ProfileController extends Controller
 
         $user->profile->update($request->only('telephone','avatar'));
 
+        return Helper::responseJson(200, 'success', 'user and profile update successfully', null, $user, 422);
 
-        return response()->json(['message' => 'user and profile update successfully', 'status' => 200], 200);
+        // return response()->json(['message' => 'user and profile update successfully', 'status' => 200], 200);
     }
 }

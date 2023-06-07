@@ -2,6 +2,8 @@
 
 namespace App\DataTables;
 
+use App\Helper\Helper;
+use Illuminate\Support\Facades\App;
 use App\Models\Meal;
 use Yajra\DataTables\Html\Button;
 use Yajra\DataTables\Html\Column;
@@ -34,7 +36,8 @@ class MealsDataTable extends DataTable
      */
     public function query(Meal $model)
     {
-        return $model->whereRestaurantId($this->restaurant->id)->newQuery();
+        return $model::whereRestaurantId($this->restaurant->id)->join('meal_translations' , 'meals.id' , '=' , 'meal_translations.meal_id')
+        ->where('language_id' , Helper::currentLanguage(App::getLocale())->id)->newQuery();
     }
 
     /**
@@ -67,7 +70,7 @@ class MealsDataTable extends DataTable
     protected function getColumns()
     {
         return [
-            Column::make('id'),
+            Column::make('meal_id'),
             Column::make('image'),
             Column::make('name'),
             Column::computed('action')

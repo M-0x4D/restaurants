@@ -20,7 +20,10 @@ class Meal extends Model
         'is_offer',
         'price',
         'avg_rate',
+        'category_id'
     ];
+
+    public $timestamps = true;
 
     public function translations()
     {
@@ -90,7 +93,7 @@ class Meal extends Model
 
     public function addons()
     {
-        return $this->hasMany(MealAddon::class);
+        return $this->belongsToMany(Addon::class , 'meal_addons');
     }
 
     public function sides()
@@ -114,7 +117,7 @@ class Meal extends Model
         $defaultMealMedia == null ? $defaultMealMedia = 'meals.png' : $defaultMealMedia = $defaultMealMedia->media;
         // dd($defaultMealMedia);
 
-        return asset('storage/meals/'.$defaultMealMedia);
+        return asset($defaultMealMedia);
     }
 
     // public function getPriceValueAttribute()
