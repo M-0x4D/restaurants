@@ -751,4 +751,10 @@ class UserController extends Controller
     }
 
 
+    function delete_account(Request $request)
+    {
+        User::where('id' , $request->userId)->delete();
+        return Helper::responseJson(200 , 'success' , 'user deleted successfully' , null ,null , 200 );
+    }
+
 }

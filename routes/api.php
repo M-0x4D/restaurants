@@ -38,15 +38,15 @@ use App\Http\Middleware\CheckUserLangMiddleware;
 */
 
 
-Route::group(['middleware' => 'check_user_lang'], function (){
+Route::group(['middleware' => 'check_user_lang'], function () {
 
 
     Route::post('login', [UserController::class, 'login']);
-    Route::post('social-login', [UserController::class,'socialLogin']);
+    Route::post('social-login', [UserController::class, 'socialLogin']);
     Route::post('register', [UserController::class, 'register']);
     Route::post('check-phone', [Usercontroller::class, 'checkPhone']);
     Route::post('forget-password', [UserController::class, 'forgetPassword']);
-    Route::post('check-otp',[UserController::class, 'checkOtp']);
+    Route::post('check-otp', [UserController::class, 'checkOtp']);
     Route::post('resend-otp', [UserController::class, 'resendOtp']);
 
     // This for non auth
@@ -58,7 +58,7 @@ Route::group(['middleware' => 'check_user_lang'], function (){
     // Get sub tags by tag_id
     Route::get('sub-tags/{tag_id}', [TagController::class, 'show']);
 
-    Route::group(['prefix' => 'meals'], function (){
+    Route::group(['prefix' => 'meals'], function () {
         // Get Meal Details by meal_id
         Route::get('show', [MealController::class, 'show']);
 
@@ -73,40 +73,41 @@ Route::group(['middleware' => 'check_user_lang'], function (){
     Route::get('countries/{country_id?}', [CountryController::class, 'index']);
 
 
-    Route::get('popular-restaurants' , [RestaurantController::class, 'popularRestaurants']);
+    Route::get('popular-restaurants', [RestaurantController::class, 'popularRestaurants']);
     Route::get('fast-delivery', [RestaurantController::class, 'fastDelivery']);
     Route::get('popular-meals', [MealController::class, 'popularMeals']);
     Route::get('offers', [OfferController::class, 'index']);
     Route::get('categories', [CategoryController::class, 'index']);
 
     // It's for non auth
-    Route::get('filter',[SearchHistoryController::class,'filter']);
+    Route::get('filter', [SearchHistoryController::class, 'filter']);
 
 
 
-//    Route::post('check-otp-for-phone', [UserController::class , 'checkOtpForPhone']);
+    //    Route::post('check-otp-for-phone', [UserController::class , 'checkOtpForPhone']);
 
-        Route::get('nearest_restaurants', [RestaurantController::class, 'nearestRestaurants']);
+    Route::get('nearest_restaurants', [RestaurantController::class, 'nearestRestaurants']);
 
 
-    Route::group(['middleware' => 'auth:api'], function(){
+    Route::group(['middleware' => 'auth:api'], function () {
 
         // Must be cleared after finish test
         Route::post('test', [HomeController::class, 'test']);
 
+        Route::post('delete-account', [UserController::class, 'delete_account']);
 
-        Route::post('create-room' , [RoomController::class , 'create_room']);
-Route::post('create-message' , [MessageController::class , 'create_message']);
-Route::post('get-rooms' , [RoomController::class , 'return_rooms']);
-Route::post('logout' , [UserController::class , 'logout']);
-Route::post('get-users' , [UserController::class , 'get_users']);
-Route::post('get-drivers' , [ControllersDriverController ::class , 'get_drivers']);
+        Route::post('create-room', [RoomController::class, 'create_room']);
+        Route::post('create-message', [MessageController::class, 'create_message']);
+        Route::post('get-rooms', [RoomController::class, 'return_rooms']);
+        Route::post('logout', [UserController::class, 'logout']);
+        Route::post('get-users', [UserController::class, 'get_users']);
+        Route::post('get-drivers', [ControllersDriverController::class, 'get_drivers']);
 
         // This for authentication
         Route::get('auth-home', [HomeController::class, 'indexAuth']);
 
         // It's for non auth
-        Route::get('auth-filter',[SearchHistoryController::class,'filterAuth']);
+        Route::get('auth-filter', [SearchHistoryController::class, 'filterAuth']);
 
 
         Route::post('change-password', [UserController::class, 'changePassword']);
@@ -121,42 +122,42 @@ Route::post('get-drivers' , [ControllersDriverController ::class , 'get_drivers'
         Route::post('check-otp-for-update-email', [UserController::class, 'checkOtpForEmail']);
         Route::post('resend-otp-for-update-email', [UserController::class, 'resendOtpForEmail']);
 
-        Route::post('editPassword', [UserController::class,'editPassword']);
+        Route::post('editPassword', [UserController::class, 'editPassword']);
 
-        Route::group(['prefix' => 'addresses'], function (){
+        Route::group(['prefix' => 'addresses'], function () {
             Route::get('/get-addresses', [AddressController::class, 'getAddresses']);
             Route::get('/show/{id}', [AddressController::class, 'show']);
             Route::post('/add', [AddressController::class, 'add']);
             Route::post('/update/{id}', [AddressController::class, 'update']);
             Route::delete('/destroy/{id}', [AddressController::class, 'destroy']);
-            Route::post('is-default/{id}', [AddressController::class,'isDefault']);
+            Route::post('is-default/{id}', [AddressController::class, 'isDefault']);
             Route::get('default-address', [AddressController::class, 'defaultAddress']);
         });
 
-        Route::group(['prefix' => 'orders'], function (){
+        Route::group(['prefix' => 'orders'], function () {
             Route::post('/', [OrderController::class, 'orders']);
             Route::post('/details', [OrderController::class, 'orderDetails']);
             Route::post('/add', [OrderController::class, 'add']);
-            Route::post('/track',[OrderController::class,'trackOrder']);
+            Route::post('/track', [OrderController::class, 'trackOrder']);
 
-//            Route::post('update_cart_qty', [OrderController::class, 'updateQty']);
+            //            Route::post('update_cart_qty', [OrderController::class, 'updateQty']);
         });
 
         Route::post('apply-coupon', [OrderController::class, 'applyCoupon']);
 
-        Route::group(['prefix' => 'reviews'], function (){
+        Route::group(['prefix' => 'reviews'], function () {
             //reviews
-            Route::post('/add',[ReviewController::class,'add']);
-            Route::get('/show',[ReviewController::class,'show']);
+            Route::post('/add', [ReviewController::class, 'add']);
+            Route::get('/show', [ReviewController::class, 'show']);
         });
 
-        Route::group(['prefix' => 'favorites'], function (){
+        Route::group(['prefix' => 'favorites'], function () {
             Route::get('/{sort}', [FavoriteController::class, 'index']);
             Route::post('meal/{meal}', [MealController::class, 'addToFavorite']);
             Route::post('restaurant/{restaurant}', [RestaurantController::class, 'addToFavorite']);
         });
 
-        Route::group(['prefix' => 'meals-for-auth'], function (){
+        Route::group(['prefix' => 'meals-for-auth'], function () {
             // Get Meal Details by meal_id
             Route::get('show', [MealController::class, 'authShow']);
 
@@ -169,11 +170,11 @@ Route::post('get-drivers' , [ControllersDriverController ::class , 'get_drivers'
         // Get category minions [restaurants, recommended meals,  offer meals]
         Route::get('category-minions-for-auth', [CategoryController::class, 'minions']);
 
-        Route::get('auth-popular-restaurants' , [RestaurantController::class, 'authPopularRestaurants']);
+        Route::get('auth-popular-restaurants', [RestaurantController::class, 'authPopularRestaurants']);
         Route::get('auth-fast-delivery', [RestaurantController::class, 'authFastDelivery']);
         Route::get('auth-popular-meals', [MealController::class, 'authPopularMeals']);
 
-//        Route::get('restaurants/{category}', [RestaurantController::class, 'index']);
+        //        Route::get('restaurants/{category}', [RestaurantController::class, 'index']);
 
 
         // Get Recommended Meals By Restaurant Id
@@ -186,7 +187,7 @@ Route::post('get-drivers' , [ControllersDriverController ::class , 'get_drivers'
 
 
 
-       // Route::resource('orders', OldOrderController::class);
+        // Route::resource('orders', OldOrderController::class);
 //        Route::get('orders',[OldOrderController::class,'index']);
 //        Route::post('orders',[OldOrderController::class,'store']);
 //        Route::get('orders/{order}',[OldOrderController::class,'show']);
@@ -206,20 +207,20 @@ Route::post('get-drivers' , [ControllersDriverController ::class , 'get_drivers'
 
 
         //search
-        Route::get('recent-searches',[SearchHistoryController::class,'recentSearches']);
-        Route::post('recent-searches/delete', [SearchHistoryController::class,'deleteSearches']);
+        Route::get('recent-searches', [SearchHistoryController::class, 'recentSearches']);
+        Route::post('recent-searches/delete', [SearchHistoryController::class, 'deleteSearches']);
 
 
     });
 
 
-    Route::get('/login/{provider}', [AuthController::class,'redirectToProvider']);
-    Route::get('/login/{provider}/callback', [AuthController::class,'handleProviderCallback']);
+    Route::get('/login/{provider}', [AuthController::class, 'redirectToProvider']);
+    Route::get('/login/{provider}/callback', [AuthController::class, 'handleProviderCallback']);
 
     Route::post('/message', [MessageController::class, 'broadcast']);
 
-    Route::get('about',[AboutUsController::class,'index']);
-    Route::get('term',[AboutUsController::class,'terms' ]);
+    Route::get('about', [AboutUsController::class, 'index']);
+    Route::get('term', [AboutUsController::class, 'terms']);
 
     Route::get('/storage-link', function () {
         Artisan::call('storage:link');
@@ -236,9 +237,7 @@ Route::post('get-drivers' , [ControllersDriverController ::class , 'get_drivers'
 //////////////////////////////////
 
 
-Route::post('create-user' , [UserController::class , 'register']);
-Route::post('sign-user' , [UserController::class , 'sign_in']);
-Route::post('create-driver' , [DriverController::class , 'register']);
-Route::post('sign-driver' , [DriverController::class , 'sign_in']);
-
-
+Route::post('create-user', [UserController::class, 'register']);
+Route::post('sign-user', [UserController::class, 'sign_in']);
+Route::post('create-driver', [DriverController::class, 'register']);
+Route::post('sign-driver', [DriverController::class, 'sign_in']);
